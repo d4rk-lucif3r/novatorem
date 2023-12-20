@@ -120,13 +120,20 @@ def makeSVG(data, background_color, border_color):
     contentBar = "".join(["<div class='bar'></div>" for _ in range(barCount)])
     barCSS = barGen(barCount)
 
-    if not "is_playing" in data:
-        #contentBar = "" #Shows/Hides the EQ bar if no song is currently playing
+    # Handle the case where 'is_playing' key might not be present
+    is_playing = data.get("is_playing", False)
+
+    if not is_playing:
         currentStatus = "Recently played:"
         recentPlays = get(RECENTLY_PLAYING_URL)
         recentPlaysLength = len(recentPlays["items"])
-        itemIndex = random.randint(0, recentPlaysLength - 1)
-        item = recentPlays["items"][itemIndex]["track"]
+
+        if recentPlaysLength > 0:
+            itemIndex = random.randint(0, recentPlaysLength - 1)
+            item = recentPlays["items"][itemIndex]["track"]
+        else:
+            # Fallback to a placeholder if there are no recent plays
+            item = {"album": {"images": [PLACEHOLDER_IMAGE]}, "artists": [{"name": "Unknown Artist", "external_urls": {"spotify": ""}}], "name": "No recent plays", "external_urls": {"spotify": ""}}
     else:
         item = data["item"]
         currentStatus = "Vibing to:"
