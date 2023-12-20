@@ -124,6 +124,7 @@ def makeSVG(data, background_color, border_color):
     is_playing = data.get("is_playing", False)
 
     if not is_playing:
+        contentBar = ""
         currentStatus = "Recently played:"
         recentPlays = get(RECENTLY_PLAYING_URL)
         recentPlaysLength = len(recentPlays["items"])
